@@ -1,0 +1,58 @@
+---
+# tasks file for webbest.aegir
+- name: Update and upgrade Ubuntu packages
+  apt:
+    update_cache: yes
+
+- name: Install Aegir
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+
+- name: Add Aegir GPG key
+  apt_key: url=https://debian.aegirproject.org/key.asc
+
+- name: Add Aegir APT repository
+  apt_repository:
+    repo: deb [arch=amd64] https://debian.aegirproject.org stable main
+
+- name: Set Postfix option type as internet site
+  debconf:
+    name: postfix
+    question: postfix/main_mailer_type
+    value: Internet Site
+    vtype: string
+
+- name: Set Postfix option type as mail name
+  debconf:
+    name: postfix
+    question: postfix/mailname
+    value: aegir.webbest.local
+    vtype: string
+
+- name: Set Aegir Hostmaster option type as database password
+  debconf:
+    name: aegir3-hostmaster
+    question: aegir/db_password
+    value: {{ aegir_db_password }}
+    vtype: string
+
+- name: Set Aegir Hostmaster option type as site
+  debconf:
+    name: aegir3-hostmaster
+    question: aegir/site
+    value: {{ aegir_hostmaster_url }}
+    vtype: string
+
+- name: Install Aegir
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - aegir3
+      - aegir-archive-keyring

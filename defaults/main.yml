@@ -1,0 +1,7 @@
+---
+# defaults file for webbest.aegir
+
+aegir_db_password: some_password
+aegir_hostmaster_url: aegir.example.com
+
+users: []
